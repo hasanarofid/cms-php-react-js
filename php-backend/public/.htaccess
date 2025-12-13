@@ -1,0 +1,53 @@
+# Basic .htaccess for Shared Hosting
+# Tested for cPanel
+
+# PHP Settings untuk Upload Video
+<IfModule mod_php7.c>
+php_value upload_max_filesize 50M
+php_value post_max_size 60M
+php_value max_execution_time 300
+php_value memory_limit 256M
+</IfModule>
+
+<IfModule mod_php.c>
+php_value upload_max_filesize 50M
+php_value post_max_size 60M
+php_value max_execution_time 300
+php_value memory_limit 256M
+</IfModule>
+
+# CORS Headers - Simple Version
+<IfModule mod_headers.c>
+    Header always set Access-Control-Allow-Origin "*"
+    Header always set Access-Control-Allow-Methods "GET, POST, PUT, DELETE, OPTIONS"
+    Header always set Access-Control-Allow-Headers "Content-Type, Authorization"
+    
+    # Static files
+    <FilesMatch "\.(jpg|jpeg|png|gif|webp|mp4|webm|ogg|pdf)$">
+        Header set Access-Control-Allow-Origin "*"
+    </FilesMatch>
+</IfModule>
+
+# URL Rewriting
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    
+    # Handle OPTIONS
+    RewriteCond %{REQUEST_METHOD} OPTIONS
+    RewriteRule ^(.*)$ $1 [R=200,L]
+    
+    # Static files
+    RewriteCond %{REQUEST_FILENAME} -f
+    RewriteRule ^uploads/ - [L]
+    
+    # Route to index.php
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteRule ^(.*)$ index.php [QSA,L]
+</IfModule>
+
+# Security
+Options -Indexes
+<FilesMatch "^\.">
+    Require all denied
+</FilesMatch>
