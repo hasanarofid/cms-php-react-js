@@ -49,6 +49,7 @@ export function SettingsForm({ settings }: SettingsFormProps) {
       websiteFavicon: settings.website_favicon?.value || '',
       websiteTitle: settings.website_title?.value || '',
       showWebsiteName: settings.show_website_name?.value === 'true' || false,
+      enableFrontend: settings.enable_frontend?.value !== 'false', // Default true
       whatsappPhone: settings.whatsapp_phone?.value || '',
       whatsappMessage: settings.whatsapp_message?.value || 'Assalamualaikum SMA AL AZHAR INSAN CENDEKIA JATIBENING\nMohon info lebih lanjut untuk pendaftaran murid baru\nTerima Kasih',
       footerAddress: settings.footer_address?.value || 'Jl. Raya Solo - Tawangmangu, Gedangan, Salam, Kec. Karangpandan, Kabupaten Karanganyar, Jawa Tengah 57791',
@@ -203,6 +204,7 @@ export function SettingsForm({ settings }: SettingsFormProps) {
     websiteFavicon: string
     websiteTitle: string
     showWebsiteName: boolean
+    enableFrontend: boolean
     whatsappPhone: string
     whatsappMessage: string
     footerAddress: string
@@ -229,6 +231,7 @@ export function SettingsForm({ settings }: SettingsFormProps) {
         updateSetting('website_favicon', data.websiteFavicon || ''),
         updateSetting('website_title', data.websiteTitle || ''),
         updateSetting('show_website_name', data.showWebsiteName ? 'true' : 'false'),
+        updateSetting('enable_frontend', data.enableFrontend ? 'true' : 'false'),
         updateSetting('whatsapp_phone', data.whatsappPhone || ''),
         updateSetting('whatsapp_message', data.whatsappMessage || ''),
         updateSetting('footer_address', data.footerAddress || ''),
@@ -293,60 +296,7 @@ export function SettingsForm({ settings }: SettingsFormProps) {
         </div>
       )}
 
-      {/* News Section Settings */}
-      <div className="border-b border-gray-200 pb-6">
-        <h2 className="text-2xl font-bold mb-4">Pengaturan Section Berita</h2>
-        
-        <div className="space-y-4">
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              Quote Section Berita (ID) *
-            </label>
-            <input
-              {...register('newsQuote', { required: true })}
-              type="text"
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
-              placeholder="Integrating Knowledge and Faith for a Brighter Tomorrow"
-            />
-            <p className="mt-1 text-xs text-gray-500">Quote yang ditampilkan di atas section berita</p>
-          </div>
 
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              Quote Section Berita (EN)
-            </label>
-            <input
-              {...register('newsQuoteEn')}
-              type="text"
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
-            />
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              Title Section Berita (ID) *
-            </label>
-            <input
-              {...register('newsTitle', { required: true })}
-              type="text"
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
-              placeholder="Berita Terbaru"
-            />
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              Title Section Berita (EN)
-            </label>
-            <input
-              {...register('newsTitleEn')}
-              type="text"
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
-              placeholder="Latest News"
-            />
-          </div>
-        </div>
-      </div>
 
       {/* Website Settings */}
       <div className="border-b border-gray-200 pb-6">
@@ -360,7 +310,7 @@ export function SettingsForm({ settings }: SettingsFormProps) {
             <input
               {...register('websiteTitle', { required: true })}
               type="text"
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent text-gray-900 bg-white"
               placeholder="SMA AL AZHAR INSAN CENDEKIA JATIBENING"
             />
             <p className="mt-1 text-xs text-gray-500">Title website yang akan ditampilkan di browser tab</p>
@@ -495,98 +445,27 @@ export function SettingsForm({ settings }: SettingsFormProps) {
               Tampilkan Nama Website di Header Menu
             </label>
           </div>
-        </div>
-      </div>
 
-      {/* Figures Section Settings */}
-      <div className="border-b border-gray-200 pb-6">
-        <h2 className="text-2xl font-bold mb-4">Pengaturan Section Tokoh-Tokoh</h2>
-        
-        <div className="space-y-4">
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              Title Section Tokoh (ID) *
-            </label>
+          <div className="flex items-center p-4 bg-yellow-50 border border-yellow-100 rounded-xl">
             <input
-              {...register('figuresTitle', { required: true })}
-              type="text"
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
-              placeholder="Tokoh-Tokoh SMA AL AZHAR INSAN CENDEKIA JATIBENING"
+              {...register('enableFrontend')}
+              type="checkbox"
+              id="enableFrontend"
+              className="h-5 w-5 text-accent focus:ring-accent border-gray-300 rounded cursor-pointer"
             />
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              Title Section Tokoh (EN)
-            </label>
-            <input
-              {...register('figuresTitleEn')}
-              type="text"
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
-              placeholder="Figures of SMA AL AZHAR INSAN CENDEKIA JATIBENING"
-            />
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              Background Image Section Tokoh
-            </label>
-            
-            {previewBackground ? (
-              <div className="relative mb-4">
-                <img
-                  src={previewBackground}
-                  alt="Background Preview"
-                  className="h-48 w-full object-cover rounded-lg border border-gray-300"
-                />
-                <button
-                  type="button"
-                  onClick={handleRemoveBackground}
-                  className="absolute top-2 right-2 bg-red-600 text-white p-2 rounded-full hover:bg-red-700 transition-colors"
-                >
-                  <X size={18} />
-                </button>
-              </div>
-            ) : (
-              <div className="border-2 border-dashed border-gray-300 rounded-lg p-8 text-center mb-4">
-                <input
-                  type="file"
-                  accept="image/*"
-                  onChange={handleBackgroundUpload}
-                  disabled={uploading}
-                  className="hidden"
-                  id="figures-background-upload"
-                />
-                <label
-                  htmlFor="figures-background-upload"
-                  className={`cursor-pointer flex flex-col items-center justify-center ${
-                    uploading ? 'opacity-50 cursor-not-allowed' : ''
-                  }`}
-                >
-                  {uploading ? (
-                    <>
-                      <Loader2 className="animate-spin text-primary-600 mb-2" size={32} />
-                      <span className="text-gray-600">Mengupload...</span>
-                    </>
-                  ) : (
-                    <>
-                      <Upload className="text-gray-400 mb-2" size={32} />
-                      <span className="text-gray-600 mb-1">Klik untuk upload background image</span>
-                      <span className="text-sm text-gray-500">PNG, JPG, GIF maksimal 10MB</span>
-                    </>
-                  )}
-                </label>
-              </div>
-            )}
-            
-            <input
-              {...register('figuresBackground')}
-              type="hidden"
-            />
+            <div className="ml-3">
+              <label htmlFor="enableFrontend" className="block text-sm font-bold text-primary-900 cursor-pointer">
+                Aktifkan Halaman Depan (Public Website)
+              </label>
+              <p className="text-xs text-primary-700 mt-0.5">
+                Jika dimatikan, pengunjung akan otomatis diarahkan ke halaman Login Admin.
+              </p>
+            </div>
           </div>
         </div>
       </div>
 
+  
       {/* WhatsApp Settings */}
       <div className="border-b border-gray-200 pb-6">
         <h2 className="text-2xl font-bold mb-4">Pengaturan WhatsApp</h2>
@@ -599,7 +478,7 @@ export function SettingsForm({ settings }: SettingsFormProps) {
             <input
               {...register('whatsappPhone', { required: true })}
               type="text"
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent text-gray-900 bg-white"
               placeholder="08112020101"
             />
             <p className="mt-1 text-xs text-gray-500">Nomor WhatsApp tujuan (tanpa + atau spasi)</p>
@@ -612,7 +491,7 @@ export function SettingsForm({ settings }: SettingsFormProps) {
             <textarea
               {...register('whatsappMessage', { required: true })}
               rows={4}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent text-gray-900 bg-white"
             />
             <p className="mt-1 text-xs text-gray-500">Pesan default yang akan ditampilkan saat user klik tombol WhatsApp</p>
           </div>
@@ -631,7 +510,7 @@ export function SettingsForm({ settings }: SettingsFormProps) {
             <textarea
               {...register('footerAddress')}
               rows={3}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent text-gray-900 bg-white"
             />
           </div>
 
@@ -643,7 +522,7 @@ export function SettingsForm({ settings }: SettingsFormProps) {
               <input
                 {...register('footerPhone')}
                 type="text"
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent text-gray-900 bg-white"
               />
             </div>
 
@@ -654,7 +533,7 @@ export function SettingsForm({ settings }: SettingsFormProps) {
               <input
                 {...register('footerEmail')}
                 type="email"
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent text-gray-900 bg-white"
               />
             </div>
           </div>
@@ -667,7 +546,7 @@ export function SettingsForm({ settings }: SettingsFormProps) {
               <input
                 {...register('androidAppUrl')}
                 type="url"
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent text-gray-900 bg-white"
               />
             </div>
 
@@ -678,7 +557,7 @@ export function SettingsForm({ settings }: SettingsFormProps) {
               <input
                 {...register('iosAppUrl')}
                 type="url"
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent text-gray-900 bg-white"
               />
             </div>
           </div>
@@ -691,7 +570,7 @@ export function SettingsForm({ settings }: SettingsFormProps) {
               <input
                 {...register('facebookUrl')}
                 type="url"
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent text-gray-900 bg-white"
               />
             </div>
 
@@ -702,7 +581,7 @@ export function SettingsForm({ settings }: SettingsFormProps) {
               <input
                 {...register('instagramUrl')}
                 type="url"
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent text-gray-900 bg-white"
               />
             </div>
 
@@ -713,7 +592,7 @@ export function SettingsForm({ settings }: SettingsFormProps) {
               <input
                 {...register('youtubeUrl')}
                 type="url"
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent text-gray-900 bg-white"
               />
             </div>
           </div>
@@ -731,7 +610,7 @@ export function SettingsForm({ settings }: SettingsFormProps) {
         <button
           type="submit"
           disabled={isLoading}
-          className="px-6 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 disabled:opacity-50 disabled:cursor-not-allowed flex items-center space-x-2"
+          className="px-8 py-2.5 bg-[#FDB913] text-[#001a35] font-bold rounded-lg hover:bg-[#e3a500] shadow-xl disabled:opacity-70 disabled:cursor-not-allowed flex items-center space-x-2 transition-all transform hover:-translate-y-0.5"
         >
           {isLoading && <Loader2 className="animate-spin" size={16} />}
           <span>{isLoading ? 'Menyimpan...' : 'Simpan'}</span>

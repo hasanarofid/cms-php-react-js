@@ -126,7 +126,7 @@ export default function LoginPage() {
           <button
             type="submit"
             disabled={isLoading}
-            className="w-full bg-primary-600 text-white py-2 px-4 rounded-lg font-semibold hover:bg-primary-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            className="w-full bg-accent text-primary-900 py-3 px-4 rounded-xl font-bold hover:bg-accent-dark transition-all shadow-lg shadow-accent/20 disabled:opacity-50 disabled:cursor-not-allowed transform hover:-translate-y-0.5"
           >
             {isLoading ? 'Memproses...' : 'Login'}
           </button>

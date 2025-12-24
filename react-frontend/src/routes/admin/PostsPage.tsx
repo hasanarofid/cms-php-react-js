@@ -31,7 +31,7 @@ export default function PostsPage() {
     return (
       <AdminLayout>
         <div className="flex items-center justify-center py-12">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-600"></div>
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-accent"></div>
         </div>
       </AdminLayout>
     )
@@ -52,7 +52,7 @@ export default function PostsPage() {
             <h1 className="text-3xl font-bold">Kelola Berita</h1>
             <Link
               to="/admin/posts/new"
-              className="bg-primary-600 text-white px-4 py-2 rounded-lg hover:bg-primary-700 transition-colors flex items-center space-x-2"
+              className="bg-accent text-primary-900 px-4 py-2 rounded-lg hover:bg-accent-dark transition-all flex items-center space-x-2 font-bold shadow-md shadow-accent/10 transform hover:-translate-y-0.5"
             >
               <Plus size={20} />
               <span>Tambah Post Baru</span>

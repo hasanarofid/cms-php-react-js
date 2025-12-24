@@ -150,30 +150,56 @@ html {
 
 :root {
   --foreground-rgb: 0, 0, 0;
-  --background-start-rgb: 214, 219, 220;
+  --background-start-rgb: 255, 255, 255;
   --background-end-rgb: 255, 255, 255;
   --font-sans: system-ui, -apple-system, sans-serif;
   --font-serif: Georgia, serif;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --foreground-rgb: 255, 255, 255;
-    --background-start-rgb: 0, 0, 0;
-    --background-end-rgb: 0, 0, 0;
-  }
-}
-
 body {
   margin: 0;
-  color: rgb(var(--foreground-rgb));
-  background: linear-gradient(
-      to bottom,
-      transparent,
-      rgb(var(--background-end-rgb))
-    )
-    rgb(var(--background-start-rgb));
+  color: #111827;
+  background: #f9fafb;
   font-family: var(--font-sans);
+}
+
+input, textarea, select {
+  color: #111827 !important;
+  background-color: #ffffff !important;
+}
+
+input::placeholder, textarea::placeholder {
+  color: #6b7280 !important;
+}
+
+/* Force Submit Button Visibility */
+button[type="submit"], 
+.bg-success,
+.bg-accent {
+  opacity: 1 !important;
+  display: flex !important;
+  visibility: visible !important;
+}
+
+/* Fix Active Menu in Sidebar */
+.active-menu,
+.bg-\[\#FDB913\] {
+  background-color: #FDB913 !important;
+  color: #001a35 !important;
+}
+
+.active-menu svg,
+.bg-\[\#FDB913\] svg {
+  color: #001a35 !important;
+}
+
+/* Ensure no purple remains */
+.bg-primary-600, .bg-primary-500 {
+  background-color: #004A99 !important;
+}
+
+.text-primary-600 {
+  color: #004A99 !important;
 }
 
 @layer utilities {

@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { useSearchParams } from 'react-router-dom'
+import { useSearchParams, useNavigate } from 'react-router-dom'
 import { Navigation } from '../components/Navigation'
 import { Footer } from '../components/Footer'
 import { WhatsAppButton } from '../components/WhatsAppButton'
@@ -10,6 +10,7 @@ import { useSEO } from '../lib/use-seo'
 
 export default function ContactPage() {
   const [searchParams] = useSearchParams()
+  const navigate = useNavigate()
   const locale = (searchParams.get('locale') as 'id' | 'en') || 'id'
 
   const [menus, setMenus] = useState<any[]>([])
@@ -57,6 +58,12 @@ export default function ContactPage() {
 
         setMenus(filteredMenus)
         setSettings(settingsData)
+
+        // Check if frontend is disabled
+        if (settingsData.enable_frontend?.value === 'false') {
+          navigate('/login', { replace: true })
+          return
+        }
 
         // Load page by slug 'kontak' - same approach as DynamicPage
         try {

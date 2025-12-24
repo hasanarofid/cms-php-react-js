@@ -96,6 +96,12 @@ export default function PostPage() {
         setLatestPosts(publishedPosts.filter((p: any) => p.id !== postData.id).slice(0, 5))
         setSettings(settingsData)
         setSeo(seoData)
+
+        // Check if frontend is disabled
+        if (settingsData.enable_frontend?.value === 'false') {
+          navigate('/login', { replace: true })
+          return
+        }
       } catch (error) {
         console.error('Error loading data:', error)
       } finally {

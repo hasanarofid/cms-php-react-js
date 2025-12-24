@@ -40,7 +40,7 @@ export default function CategoriesPage() {
     return (
       <AdminLayout>
         <div className="flex items-center justify-center py-12">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-600"></div>
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#FDB913]"></div>
         </div>
       </AdminLayout>
     )
@@ -54,7 +54,7 @@ export default function CategoriesPage() {
             <h1 className="text-3xl font-bold">Kelola Kategori</h1>
             <Link
               to="/admin/categories/new"
-              className="bg-primary-600 text-white px-4 py-2 rounded-lg hover:bg-primary-700 transition-colors flex items-center space-x-2"
+              className="bg-[#FDB913] text-[#001a35] px-4 py-2 rounded-lg hover:bg-[#e3a500] transition-all flex items-center space-x-2 font-bold shadow-md transform hover:-translate-y-0.5"
             >
               <Plus size={20} />
               <span>Tambah Kategori</span>

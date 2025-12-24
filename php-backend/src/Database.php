@@ -53,6 +53,11 @@ class Database
         return $this->connection;
     }
 
+    public function getPdo()
+    {
+        return $this->connection;
+    }
+
     public function query($sql, $params = [])
     {
         try {

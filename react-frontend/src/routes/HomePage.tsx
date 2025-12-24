@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { useSearchParams, Link } from 'react-router-dom'
+import { useSearchParams, Link, useNavigate } from 'react-router-dom'
 import { Navigation } from '../components/Navigation'
 import { Footer } from '../components/Footer'
 import { WhatsAppButton } from '../components/WhatsAppButton'
@@ -16,6 +16,7 @@ import { ArrowRight } from 'lucide-react'
 
 export default function HomePage() {
   const [searchParams] = useSearchParams()
+  const navigate = useNavigate()
   const locale = (searchParams.get('locale') as 'id' | 'en') || 'id'
   
   const [menus, setMenus] = useState<any[]>([])
@@ -34,29 +35,31 @@ export default function HomePage() {
   useSettings(settings)
   
   // Apply SEO meta tags
-  useSEO(seo, settings.website_title?.value || 'SMA AL AZHAR INSAN CENDEKIA JATIBENING')
+  useSEO(seo, settings.website_title?.value || 'Sken Malang')
 
   useEffect(() => {
     async function loadData() {
       try {
         const [menusData, postsData, slidersData, homeSectionsData, faqsData, figuresData, partnershipsData, settingsData, seoData] = await Promise.all([
-          apiClient.get('/admin/menus'),
-          apiClient.get('/admin/posts'),
-          apiClient.get('/admin/sliders'),
-          apiClient.get('/admin/home-sections'),
-          apiClient.get('/admin/faqs'),
-          apiClient.get('/admin/figures'),
-          apiClient.get('/admin/partnerships'),
+          apiClient.get('/admin/menus').catch(() => []),
+          apiClient.get('/admin/posts').catch(() => []),
+          apiClient.get('/admin/sliders').catch(() => []),
+          apiClient.get('/admin/home-sections').catch(() => []),
+          apiClient.get('/admin/faqs').catch(() => []),
+          apiClient.get('/admin/figures').catch(() => []),
+          apiClient.get('/admin/partnerships').catch(() => []),
           apiClient.get('/admin/settings').then((s: any[]) => {
             const obj: any = {}
-            s.forEach((item: any) => { obj[item.key] = item })
+            if (Array.isArray(s)) {
+              s.forEach((item: any) => { obj[item.key] = item })
+            }
             return obj
-          }),
+          }).catch(() => ({})),
           apiClient.get('/admin/seo?pageType=global', false).catch(() => null),
         ])
 
         // Filter menus
-        const filteredMenus = menusData
+        const filteredMenus = (Array.isArray(menusData) ? menusData : [])
           .filter((menu: any) => !menu.parentId && menu.isActive)
           .map((menu: any) => ({
             ...menu,
@@ -77,7 +80,7 @@ export default function HomePage() {
           .sort((a: any, b: any) => a.order - b.order)
 
         // Filter posts
-        const filteredPosts = postsData
+        const filteredPosts = (Array.isArray(postsData) ? postsData : [])
           .filter((p: any) => p.isPublished)
           .sort((a: any, b: any) => 
             new Date(b.publishedAt || b.createdAt).getTime() - new Date(a.publishedAt || a.createdAt).getTime()
@@ -85,7 +88,7 @@ export default function HomePage() {
           .slice(0, 6)
 
         // Process home sections
-        const processedSections = homeSectionsData.map((section: any) => ({
+        const processedSections = (Array.isArray(homeSectionsData) ? homeSectionsData : []).map((section: any) => ({
           ...section,
           images: Array.isArray(section.images) ? section.images : (section.images ? [section.images] : [])
         }))
@@ -96,16 +99,21 @@ export default function HomePage() {
         // Debug: Log sliders data
         if (import.meta.env.DEV) {
           console.log('Loaded sliders:', slidersData)
-          console.log('Active sliders:', slidersData.filter((s: any) => s.isActive !== false))
         }
         
-        setSliders(slidersData)
+        setSliders(Array.isArray(slidersData) ? slidersData : [])
         setHomeSections(processedSections)
-        setFaqs(faqsData)
-        setFigures(figuresData)
-        setPartnerships(partnershipsData)
+        setFaqs(Array.isArray(faqsData) ? faqsData : [])
+        setFigures(Array.isArray(figuresData) ? figuresData : [])
+        setPartnerships(Array.isArray(partnershipsData) ? partnershipsData : [])
         setSettings(settingsData)
         setSeo(seoData)
+
+        // Check if frontend is disabled
+        if (settingsData.enable_frontend?.value === 'false') {
+          navigate('/login', { replace: true })
+          return
+        }
       } catch (error) {
         console.error('Error loading data:', error)
       } finally {
@@ -151,16 +159,33 @@ export default function HomePage() {
             showWebsiteName={settings.show_website_name?.value === 'true'}
           />
           {/* Hero Section (Fallback if no sliders) */}
-          <section className="relative bg-gradient-to-r from-primary-600 to-primary-800 text-white">
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24">
+          <section className="relative bg-gradient-to-br from-primary-600 to-primary-800 text-white overflow-hidden">
+            {/* Abstract Background Elements */}
+            <div className="absolute top-0 right-0 w-1/3 h-full bg-accent opacity-10 skew-x-12 transform origin-top-right"></div>
+            <div className="absolute top-1/4 -left-20 w-64 h-64 bg-accent-light rounded-full blur-3xl opacity-20"></div>
+            
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24 relative z-10">
               <div className="text-center">
-                <h1 className="text-5xl md:text-6xl font-bold mb-6">
-                  {settings.website_title?.value || 'Judul Website Default'}
+                <h1 className="text-5xl md:text-7xl font-extrabold mb-6 tracking-tight drop-shadow-sm">
+                  {settings.website_title?.value || 'Sken Malang'}
                 </h1>
-                <p className="text-xl md:text-2xl mb-8 text-primary-100">
-                  {settings.website_tagline?.value || 'Tagline Website Default'}
+                <p className="text-xl md:text-3xl mb-10 text-primary-50 font-light max-w-3xl mx-auto">
+                  {settings.website_tagline?.value || 'Sewa Kasur Malang Murah & Berkualitas'}
                 </p>
-                
+                <div className="flex flex-col sm:flex-row justify-center items-center space-y-4 sm:space-y-0 sm:space-x-4">
+                  <Link 
+                    to="/kasur" 
+                    className="w-full sm:w-auto bg-accent hover:bg-accent-dark text-primary-900 px-10 py-4 rounded-full font-bold text-lg transition-all shadow-xl transform hover:-translate-y-1 hover:shadow-accent/20"
+                  >
+                    Lihat Pilihan Kasur
+                  </Link>
+                  <a 
+                    href={`https://wa.me/${settings.whatsapp_phone?.value || ''}`} 
+                    className="w-full sm:w-auto bg-white/10 hover:bg-white/20 text-white border border-white/30 backdrop-blur-md px-10 py-4 rounded-full font-bold text-lg transition-all"
+                  >
+                    Hubungi Kami
+                  </a>
+                </div>
               </div>
             </div>
           </section>

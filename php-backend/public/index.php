@@ -270,6 +270,12 @@ $routes = [
     'api/admin/contacts/([a-zA-Z0-9]+)/read' => 'ContactController@markAsRead',
     'api/admin/contacts/([a-zA-Z0-9]+)/delete' => 'ContactController@delete',
     
+    // Admin - Hotel/Bookings
+    'api/admin/bookings' => 'BookingController@index',
+    'api/admin/bookings/create' => 'BookingController@create',
+    'api/admin/bookings/([a-zA-Z0-9]+)/status' => 'BookingController@updateStatus',
+    'api/hotel/available-rooms' => 'BookingController@availableRooms',
+    
     // Public - Contact
     'api/contact' => 'ContactController@create',
 ];

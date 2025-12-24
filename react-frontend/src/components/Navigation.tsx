@@ -41,23 +41,23 @@ export function Navigation({ menus, locale = 'id', logo, websiteName, showWebsit
   const shouldCenterMenu = !hasLogoOrTitle
 
   return (
-    <nav className="absolute top-0 left-0 right-0 z-50 bg-transparent">
+    <nav className="absolute top-0 left-0 right-0 z-50 bg-gradient-to-b from-black/40 to-transparent backdrop-blur-[2px]">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between items-center h-20">
+        <div className="flex justify-between items-center h-24">
           {hasLogoOrTitle ? (
-            <div className="flex items-center space-x-3">
-              {logo && showWebsiteName && (
-                <Link to="/" className="flex items-center">
+            <div className="flex items-center space-x-4">
+              {logo && (
+                <Link to="/" className="flex items-center bg-white p-1.5 rounded-xl shadow-lg transform hover:scale-105 transition-all">
                   <img
                     src={logo}
                     alt={websiteName || 'Logo'}
-                    className="h-12 w-auto object-contain drop-shadow-lg"
+                    className="h-12 w-auto object-contain"
                   />
                 </Link>
               )}
               {showWebsiteName && (
-                <Link to="/" className="text-2xl md:text-3xl font-bold text-white hover:text-white/90 transition-colors drop-shadow-lg">
-                  {websiteName || ''}
+                <Link to="/" className="text-2xl md:text-3xl font-black text-white hover:text-accent transition-colors drop-shadow-lg tracking-tight">
+                  {websiteName || 'Sken Malang'}
                 </Link>
               )}
             </div>
@@ -66,7 +66,7 @@ export function Navigation({ menus, locale = 'id', logo, websiteName, showWebsit
           )}
 
           {/* Desktop Menu */}
-          <div className={`hidden md:flex md:items-center md:space-x-2 ${shouldCenterMenu ? 'absolute left-1/2 transform -translate-x-1/2' : ''}`}>
+          <div className={`hidden md:flex md:items-center md:space-x-1 ${shouldCenterMenu ? 'absolute left-1/2 transform -translate-x-1/2' : ''}`}>
             {menus.map((menu: any) => (
               <div key={menu.id} className="relative group">
                 {menu.menuType === 'external' && menu.externalUrl ? (
@@ -74,32 +74,20 @@ export function Navigation({ menus, locale = 'id', logo, websiteName, showWebsit
                     href={menu.externalUrl}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="px-3 py-2 text-white hover:text-white/80 font-semibold text-sm transition-colors flex items-center drop-shadow-md"
+                    className="px-4 py-2 text-white hover:text-accent font-bold text-sm transition-all flex items-center drop-shadow-md uppercase tracking-wide"
+                  >
+                    {locale === 'en' && menu.titleEn ? menu.titleEn : menu.title}
+                  </a>
+                ) : (
+                  <Link
+                    to={`/${menu.slug}`}
+                    className="px-4 py-2 text-white hover:text-accent font-bold text-sm transition-all flex items-center drop-shadow-md uppercase tracking-wide group-hover:bg-white/10 rounded-full"
                   >
                     {locale === 'en' && menu.titleEn ? menu.titleEn : menu.title}
                     {menu.children && menu.children.length > 0 && (
-                      <span className="ml-1 text-white/90">+</span>
+                      <ChevronDown size={14} className="ml-1 opacity-70 group-hover:rotate-180 transition-transform" />
                     )}
-                  </a>
-                ) : (
-                  menu.slug.startsWith('#') ? (
-                    <span className="px-3 py-2 text-white font-semibold text-sm flex items-center drop-shadow-md cursor-default">
-                      {locale === 'en' && menu.titleEn ? menu.titleEn : menu.title}
-                      {menu.children && menu.children.length > 0 && (
-                        <span className="ml-1 text-white/90">+</span>
-                      )}
-                    </span>
-                  ) : (
-                    <Link
-                      to={`/${menu.slug}`}
-                      className="px-3 py-2 text-white hover:text-white/80 font-semibold text-sm transition-colors flex items-center drop-shadow-md"
-                    >
-                      {locale === 'en' && menu.titleEn ? menu.titleEn : menu.title}
-                      {menu.children && menu.children.length > 0 && (
-                        <span className="ml-1 text-white/90">+</span>
-                      )}
-                    </Link>
-                  )
+                  </Link>
                 )}
                 {menu.children && menu.children.length > 0 && (
                   <div className="absolute left-0 mt-1 w-64 bg-white/95 backdrop-blur-md rounded-lg shadow-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 border border-gray-200/50">

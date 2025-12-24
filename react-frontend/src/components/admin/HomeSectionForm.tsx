@@ -983,7 +983,7 @@ export function HomeSectionForm({ section, defaultType }: HomeSectionFormProps) 
         <button
           type="submit"
           disabled={isLoading}
-          className="px-6 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 disabled:opacity-50 disabled:cursor-not-allowed"
+          className="px-8 py-2.5 bg-[#FDB913] text-[#001a35] font-bold rounded-lg hover:bg-[#e3a500] shadow-lg shadow-yellow-500/20 disabled:opacity-50 disabled:cursor-not-allowed transition-all transform hover:-translate-y-0.5"
         >
           {isLoading ? 'Menyimpan...' : 'Simpan'}
         </button>

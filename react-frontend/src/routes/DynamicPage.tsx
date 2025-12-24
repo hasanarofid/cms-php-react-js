@@ -183,6 +183,12 @@ export default function DynamicPage() {
 
         setMenus(filteredMenus)
         setSettings(settingsData)
+
+        // Check if frontend is disabled
+        if (settingsData.enable_frontend?.value === 'false') {
+          navigate('/login', { replace: true })
+          return
+        }
       } catch (error) {
         console.error('Error loading data:', error)
       } finally {

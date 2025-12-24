@@ -12,17 +12,26 @@ export default {
       },
       colors: {
         primary: {
-          50: '#fefcff',   // Sangat terang (mirip background logo)
-          100: '#f8e9fe',
-          200: '#eeccfd',
-          300: '#dd99fc',
-          400: '#c55ff9',
-          500: '#a450e1',  // Ungu terang (warna utama rambut)
-          600: '#823cb2',
-          700: '#632f87',   // Ungu gelap (warna bayangan rambut)
-          800: '#4a2466',
-          900: '#311844',
+          50: '#eef6ff',
+          100: '#d9e9ff',
+          200: '#bcd9ff',
+          300: '#8ebfff',
+          400: '#5899ff',
+          500: '#004A99', // Blue from logo
+          600: '#003d7e',
+          700: '#003165',
+          800: '#00254c',
+          900: '#001a35',
         },
+        accent: {
+          light: '#ffdf8d',
+          DEFAULT: '#FDB913', // Yellow from logo
+          dark: '#e3a500',
+        },
+        success: {
+          DEFAULT: '#10b981', // Emerald Green
+          dark: '#059669',
+        }
       },
     },
   },

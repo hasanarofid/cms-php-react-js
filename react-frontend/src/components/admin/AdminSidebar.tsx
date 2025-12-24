@@ -6,6 +6,7 @@ import {
   Sliders, 
   FileText, 
   Newspaper, 
+  Calendar,
   // Image, 
   Menu as MenuIcon, 
   Settings,
@@ -105,6 +106,11 @@ const menuItems: MenuItem[] = [
     icon: <Newspaper size={20} />,
   },
   {
+    title: 'Hotel & Booking',
+    href: '/admin/bookings',
+    icon: <Calendar size={20} />,
+  },
+  {
     title: 'Kontak',
     href: '/admin/contacts',
     icon: <Mail size={20} />,
@@ -188,9 +194,16 @@ export function AdminSidebar() {
     <aside className="fixed left-0 top-0 h-screen w-64 bg-gray-900 text-white shadow-lg z-40">
       <div className="flex flex-col h-full">
         {/* Logo/Header */}
-        <div className="p-6 border-b border-gray-800">
-          <h2 className="text-xl font-bold text-white">CMS Feylla</h2>
-          <p className="text-sm text-gray-400 mt-1">Admin Panel</p>
+        <div className="p-6 border-b border-gray-800 bg-gray-900/50">
+          <div className="flex items-center space-x-3">
+            <div className="bg-accent p-1 rounded-lg">
+              <div className="w-8 h-8 bg-primary-900 rounded-md flex items-center justify-center font-black text-accent text-xl">S</div>
+            </div>
+            <div>
+              <h2 className="text-lg font-black text-white leading-none">Sken Malang</h2>
+              <p className="text-[10px] text-accent font-bold uppercase tracking-widest mt-1">Admin Panel</p>
+            </div>
+          </div>
         </div>
 
         {/* Menu Items */}
@@ -209,7 +222,7 @@ export function AdminSidebar() {
                       className={cn(
                         'w-full flex items-center justify-between px-4 py-3 rounded-lg transition-colors',
                         isItemActive
-                          ? 'bg-primary-600 text-white'
+                          ? 'bg-[#FDB913] text-[#001a35] shadow-lg font-black active-menu'
                           : 'text-gray-300 hover:bg-gray-800 hover:text-white'
                       )}
                     >
@@ -226,16 +239,16 @@ export function AdminSidebar() {
                     {isExpanded && (
                       <div className="ml-4 mt-1 space-y-1">
                         {item.children?.map((child) => (
-                          <Link
-                            key={child.title}
-                            to={child.href || '#'}
-                            className={cn(
-                              'flex items-center space-x-3 px-4 py-2.5 rounded-lg transition-colors',
-                              isActive(child.href)
-                                ? 'bg-primary-600 text-white'
-                                : 'text-gray-400 hover:bg-gray-800 hover:text-white'
-                            )}
-                          >
+                    <Link
+                      key={child.title}
+                      to={child.href || '#'}
+                      className={cn(
+                        'flex items-center space-x-3 px-4 py-2.5 rounded-lg transition-colors',
+                        isActive(child.href)
+                          ? 'bg-[#FDB913] text-[#001a35] font-black shadow-md active-menu'
+                          : 'text-gray-400 hover:bg-gray-800 hover:text-white'
+                      )}
+                    >
                             {child.icon}
                             <span className="text-sm">{child.title}</span>
                           </Link>
@@ -249,7 +262,7 @@ export function AdminSidebar() {
                     className={cn(
                       'flex items-center space-x-3 px-4 py-3 rounded-lg transition-colors',
                       isActive(item.href)
-                        ? 'bg-primary-600 text-white'
+                        ? 'bg-[#FDB913] text-[#001a35] font-black shadow-lg active-menu'
                         : 'text-gray-300 hover:bg-gray-800 hover:text-white'
                     )}
                   >
@@ -268,7 +281,7 @@ export function AdminSidebar() {
             href="/"
             target="_blank"
             rel="noopener noreferrer"
-            className="flex items-center space-x-3 px-4 py-2.5 rounded-lg transition-colors text-gray-300 hover:bg-gray-800 hover:text-white w-full"
+            className="flex items-center space-x-3 px-4 py-2.5 rounded-lg transition-colors text-gray-300 hover:bg-accent hover:text-primary-900 font-bold w-full"
           >
             <ExternalLink size={18} />
             <span className="text-sm font-medium">Buka Halaman Depan</span>

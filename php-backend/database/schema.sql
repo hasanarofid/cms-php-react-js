@@ -1,9 +1,9 @@
--- MySQL Schema untuk CMS Sekolah
--- Dikonversi dari Prisma SQLite Schema
+-- MySQL Schema untuk Universal CMS & Hotel Management System
+-- Mendukung fitur dinamis (WordPress-like) dan modul spesifik (Hotel)
 
 SET FOREIGN_KEY_CHECKS = 0;
 
--- Table: User
+-- 1. USER MANAGEMENT
 DROP TABLE IF EXISTS `User`;
 CREATE TABLE `User` (
   `id` VARCHAR(191) NOT NULL PRIMARY KEY,
@@ -16,166 +16,41 @@ CREATE TABLE `User` (
   INDEX `User_email_idx` (`email`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Table: Menu
-DROP TABLE IF EXISTS `Menu`;
-CREATE TABLE `Menu` (
-  `id` VARCHAR(191) NOT NULL PRIMARY KEY,
-  `title` VARCHAR(191) NOT NULL,
-  `titleEn` VARCHAR(191) NULL,
-  `slug` VARCHAR(191) NOT NULL UNIQUE,
-  `parentId` VARCHAR(191) NULL,
-  `order` INT NOT NULL DEFAULT 0,
-  `isActive` BOOLEAN NOT NULL DEFAULT TRUE,
-  `menuType` VARCHAR(191) NOT NULL DEFAULT 'page',
-  `externalUrl` VARCHAR(191) NULL,
-  `icon` VARCHAR(191) NULL,
-  `description` TEXT NULL,
-  `descriptionEn` TEXT NULL,
-  `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
-  `updatedAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3) ON UPDATE CURRENT_TIMESTAMP(3),
-  INDEX `Menu_parentId_idx` (`parentId`),
-  INDEX `Menu_slug_idx` (`slug`),
-  FOREIGN KEY (`parentId`) REFERENCES `Menu`(`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
--- Table: Category
-DROP TABLE IF EXISTS `Category`;
-CREATE TABLE `Category` (
-  `id` VARCHAR(191) NOT NULL PRIMARY KEY,
-  `name` VARCHAR(191) NOT NULL,
-  `nameEn` VARCHAR(191) NULL,
-  `slug` VARCHAR(191) NOT NULL UNIQUE,
-  `description` TEXT NULL,
-  `descriptionEn` TEXT NULL,
-  `image` VARCHAR(191) NULL,
-  `parentId` VARCHAR(191) NULL,
-  `categoryType` VARCHAR(191) NOT NULL DEFAULT 'general',
-  `order` INT NOT NULL DEFAULT 0,
-  `isActive` BOOLEAN NOT NULL DEFAULT TRUE,
-  `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
-  `updatedAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3) ON UPDATE CURRENT_TIMESTAMP(3),
-  INDEX `Category_parentId_idx` (`parentId`),
-  INDEX `Category_slug_idx` (`slug`),
-  FOREIGN KEY (`parentId`) REFERENCES `Category`(`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
--- Table: Page
-DROP TABLE IF EXISTS `Page`;
-CREATE TABLE `Page` (
-  `id` VARCHAR(191) NOT NULL PRIMARY KEY,
-  `title` VARCHAR(191) NOT NULL,
-  `titleEn` VARCHAR(191) NULL,
-  `slug` VARCHAR(191) NOT NULL UNIQUE,
-  `content` LONGTEXT NOT NULL,
-  `contentEn` LONGTEXT NULL,
-  `excerpt` TEXT NULL,
-  `excerptEn` TEXT NULL,
-  `featuredImage` VARCHAR(191) NULL,
-  `menuId` VARCHAR(191) NULL,
-  `pageType` VARCHAR(191) NOT NULL DEFAULT 'standard',
-  `template` VARCHAR(191) NULL,
-  `seoTitle` VARCHAR(191) NULL,
-  `seoDescription` TEXT NULL,
-  `seoKeywords` VARCHAR(191) NULL,
-  `isPublished` BOOLEAN NOT NULL DEFAULT FALSE,
-  `publishedAt` DATETIME(3) NULL,
-  `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
-  `updatedAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3) ON UPDATE CURRENT_TIMESTAMP(3),
-  `authorId` VARCHAR(191) NOT NULL,
-  INDEX `Page_menuId_idx` (`menuId`),
-  INDEX `Page_slug_idx` (`slug`),
-  INDEX `Page_authorId_idx` (`authorId`),
-  FOREIGN KEY (`menuId`) REFERENCES `Menu`(`id`) ON DELETE SET NULL ON UPDATE CASCADE,
-  FOREIGN KEY (`authorId`) REFERENCES `User`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
--- Table: Post
+-- 2. CONTENT ENGINE (The "WordPress" Way)
 DROP TABLE IF EXISTS `Post`;
 CREATE TABLE `Post` (
   `id` VARCHAR(191) NOT NULL PRIMARY KEY,
   `title` VARCHAR(191) NOT NULL,
   `titleEn` VARCHAR(191) NULL,
   `slug` VARCHAR(191) NOT NULL UNIQUE,
-  `content` LONGTEXT NOT NULL,
+  `content` LONGTEXT NULL,
   `contentEn` LONGTEXT NULL,
   `excerpt` TEXT NULL,
   `excerptEn` TEXT NULL,
   `featuredImage` VARCHAR(191) NULL,
-  `category` VARCHAR(191) NULL,
+  `postType` VARCHAR(191) NOT NULL DEFAULT 'post', -- 'post', 'page', 'room', 'service'
+  `status` VARCHAR(191) NOT NULL DEFAULT 'publish',
   `categoryId` VARCHAR(191) NULL,
-  `tags` TEXT NOT NULL,
-  `postType` VARCHAR(191) NOT NULL DEFAULT 'post',
-  `isPublished` BOOLEAN NOT NULL DEFAULT FALSE,
-  `publishedAt` DATETIME(3) NULL,
-  `views` INT NOT NULL DEFAULT 0,
-  `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
-  `updatedAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3) ON UPDATE CURRENT_TIMESTAMP(3),
   `authorId` VARCHAR(191) NOT NULL,
-  INDEX `Post_categoryId_idx` (`categoryId`),
-  INDEX `Post_slug_idx` (`slug`),
-  INDEX `Post_authorId_idx` (`authorId`),
-  FOREIGN KEY (`categoryId`) REFERENCES `Category`(`id`) ON DELETE SET NULL ON UPDATE CASCADE,
-  FOREIGN KEY (`authorId`) REFERENCES `User`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
--- Table: Media
-DROP TABLE IF EXISTS `Media`;
-CREATE TABLE `Media` (
-  `id` VARCHAR(191) NOT NULL PRIMARY KEY,
-  `filename` VARCHAR(191) NOT NULL,
-  `originalName` VARCHAR(191) NOT NULL,
-  `mimeType` VARCHAR(191) NOT NULL,
-  `size` INT NOT NULL,
-  `url` VARCHAR(191) NOT NULL,
-  `alt` VARCHAR(191) NULL,
+  `views` INT NOT NULL DEFAULT 0,
+  `order` INT NOT NULL DEFAULT 0,
   `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
-  `uploadedById` VARCHAR(191) NOT NULL,
-  INDEX `Media_uploadedById_idx` (`uploadedById`),
-  FOREIGN KEY (`uploadedById`) REFERENCES `User`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
--- Table: Gallery
-DROP TABLE IF EXISTS `Gallery`;
-CREATE TABLE `Gallery` (
-  `id` VARCHAR(191) NOT NULL PRIMARY KEY,
-  `title` VARCHAR(191) NOT NULL,
-  `titleEn` VARCHAR(191) NULL,
-  `description` TEXT NULL,
-  `descriptionEn` TEXT NULL,
-  `images` TEXT NOT NULL,
-  `category` VARCHAR(191) NULL,
-  `isPublished` BOOLEAN NOT NULL DEFAULT FALSE,
-  `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
-  `updatedAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3) ON UPDATE CURRENT_TIMESTAMP(3)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
--- Table: Contact
-DROP TABLE IF EXISTS `Contact`;
-CREATE TABLE `Contact` (
-  `id` VARCHAR(191) NOT NULL PRIMARY KEY,
-  `name` VARCHAR(191) NOT NULL,
-  `email` VARCHAR(191) NOT NULL,
-  `phone` VARCHAR(191) NULL,
-  `subject` VARCHAR(191) NULL,
-  `message` TEXT NOT NULL,
-  `isRead` BOOLEAN NOT NULL DEFAULT FALSE,
-  `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
-  INDEX `Contact_email_idx` (`email`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
--- Table: Setting
-DROP TABLE IF EXISTS `Setting`;
-CREATE TABLE `Setting` (
-  `id` VARCHAR(191) NOT NULL PRIMARY KEY,
-  `key` VARCHAR(191) NOT NULL UNIQUE,
-  `value` TEXT NOT NULL,
-  `valueEn` TEXT NULL,
-  `type` VARCHAR(191) NOT NULL DEFAULT 'text',
   `updatedAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3) ON UPDATE CURRENT_TIMESTAMP(3),
-  INDEX `Setting_key_idx` (`key`)
+  INDEX `Post_slug_idx` (`slug`),
+  INDEX `Post_postType_idx` (`postType`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Table: Slider
+DROP TABLE IF EXISTS `PostMeta`;
+CREATE TABLE `PostMeta` (
+  `id` BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+  `postId` VARCHAR(191) NOT NULL,
+  `metaKey` VARCHAR(191) NOT NULL,
+  `metaValue` LONGTEXT NULL,
+  INDEX `PostMeta_postId_idx` (`postId`),
+  INDEX `PostMeta_metaKey_idx` (`metaKey`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- 3. FRONT PAGE COMPONENTS (Specific Tables for Fast Access)
 DROP TABLE IF EXISTS `Slider`;
 CREATE TABLE `Slider` (
   `id` VARCHAR(191) NOT NULL PRIMARY KEY,
@@ -183,23 +58,22 @@ CREATE TABLE `Slider` (
   `titleEn` VARCHAR(191) NULL,
   `subtitle` VARCHAR(191) NULL,
   `subtitleEn` VARCHAR(191) NULL,
-  `image` VARCHAR(191) NOT NULL,
+  `image` VARCHAR(191) NULL,
   `videoUrl` VARCHAR(191) NULL,
   `videoFile` VARCHAR(191) NULL,
+  `videoDuration` INT NULL,
   `buttonText` VARCHAR(191) NULL,
   `buttonTextEn` VARCHAR(191) NULL,
   `buttonUrl` VARCHAR(191) NULL,
   `order` INT NOT NULL DEFAULT 0,
   `isActive` BOOLEAN NOT NULL DEFAULT TRUE,
-  `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
-  `updatedAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3) ON UPDATE CURRENT_TIMESTAMP(3)
+  `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Table: HomeSection
 DROP TABLE IF EXISTS `HomeSection`;
 CREATE TABLE `HomeSection` (
   `id` VARCHAR(191) NOT NULL PRIMARY KEY,
-  `type` VARCHAR(191) NOT NULL,
+  `type` VARCHAR(191) NOT NULL, -- 'hero', 'about', 'services', 'video-profile', etc.
   `title` VARCHAR(191) NULL,
   `titleEn` VARCHAR(191) NULL,
   `subtitle` VARCHAR(191) NULL,
@@ -207,77 +81,135 @@ CREATE TABLE `HomeSection` (
   `content` LONGTEXT NULL,
   `contentEn` LONGTEXT NULL,
   `image` VARCHAR(191) NULL,
-  `images` TEXT NULL,
+  `imageLeft` VARCHAR(191) NULL,
+  `imageRight` VARCHAR(191) NULL,
+  `images` TEXT NULL, -- JSON array
   `videoUrl` VARCHAR(191) NULL,
   `buttonText` VARCHAR(191) NULL,
   `buttonTextEn` VARCHAR(191) NULL,
   `buttonUrl` VARCHAR(191) NULL,
+  `faqItems` TEXT NULL, -- JSON array
+  `figures` TEXT NULL, -- JSON array
+  `partnerships` TEXT NULL, -- JSON array
+  `mapEmbedUrl` TEXT NULL,
   `order` INT NOT NULL DEFAULT 0,
   `isActive` BOOLEAN NOT NULL DEFAULT TRUE,
+  `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- 4. TAXONOMY & MENUS
+DROP TABLE IF EXISTS `Category`;
+CREATE TABLE `Category` (
+  `id` VARCHAR(191) NOT NULL PRIMARY KEY,
+  `name` VARCHAR(191) NOT NULL,
+  `nameEn` VARCHAR(191) NULL,
+  `slug` VARCHAR(191) NOT NULL UNIQUE,
+  `description` TEXT NULL,
+  `parentId` VARCHAR(191) NULL,
+  `categoryType` VARCHAR(191) NOT NULL DEFAULT 'general',
+  `isActive` BOOLEAN NOT NULL DEFAULT TRUE,
+  `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+DROP TABLE IF EXISTS `Menu`;
+CREATE TABLE `Menu` (
+  `id` VARCHAR(191) NOT NULL PRIMARY KEY,
+  `title` VARCHAR(191) NOT NULL,
+  `titleEn` VARCHAR(191) NULL,
+  `slug` VARCHAR(191) NOT NULL,
+  `parentId` VARCHAR(191) NULL,
+  `order` INT NOT NULL DEFAULT 0,
+  `menuType` VARCHAR(191) NOT NULL DEFAULT 'link',
+  `isActive` BOOLEAN NOT NULL DEFAULT TRUE,
+  `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- 5. HOTEL MODULE
+DROP TABLE IF EXISTS `Booking`;
+CREATE TABLE `Booking` (
+  `id` VARCHAR(191) NOT NULL PRIMARY KEY,
+  `roomId` VARCHAR(191) NOT NULL,
+  `guestName` VARCHAR(191) NOT NULL,
+  `guestEmail` VARCHAR(191) NULL,
+  `guestPhone` VARCHAR(191) NULL,
+  `checkIn` DATETIME NOT NULL,
+  `checkOut` DATETIME NOT NULL,
+  `totalPrice` DECIMAL(15,2) NOT NULL DEFAULT 0,
+  `status` VARCHAR(191) NOT NULL DEFAULT 'booked',
+  `notes` TEXT NULL,
   `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
   `updatedAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3) ON UPDATE CURRENT_TIMESTAMP(3)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Table: FAQ
+-- 6. CORE CMS TABLES
+DROP TABLE IF EXISTS `Media`;
+CREATE TABLE `Media` (
+  `id` VARCHAR(191) NOT NULL PRIMARY KEY,
+  `filename` VARCHAR(191) NOT NULL,
+  `url` VARCHAR(191) NOT NULL,
+  `mimeType` VARCHAR(191) NOT NULL,
+  `size` INT NOT NULL,
+  `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+DROP TABLE IF EXISTS `Setting`;
+CREATE TABLE `Setting` (
+  `id` VARCHAR(191) NOT NULL PRIMARY KEY,
+  `key` VARCHAR(191) NOT NULL UNIQUE,
+  `value` TEXT NOT NULL,
+  `valueEn` TEXT NULL,
+  `type` VARCHAR(191) NOT NULL DEFAULT 'text',
+  `group` VARCHAR(191) NOT NULL DEFAULT 'general',
+  `updatedAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3) ON UPDATE CURRENT_TIMESTAMP(3)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- 7. ADDITIONAL TABLES (Required by existing controllers)
 DROP TABLE IF EXISTS `FAQ`;
 CREATE TABLE `FAQ` (
   `id` VARCHAR(191) NOT NULL PRIMARY KEY,
-  `question` VARCHAR(191) NOT NULL,
-  `questionEn` VARCHAR(191) NULL,
-  `answer` LONGTEXT NOT NULL,
-  `answerEn` LONGTEXT NULL,
-  `image` VARCHAR(191) NULL,
-  `sectionTitle` VARCHAR(191) NULL,
-  `sectionTitleEn` VARCHAR(191) NULL,
+  `question` TEXT NOT NULL,
+  `questionEn` TEXT NULL,
+  `answer` TEXT NOT NULL,
+  `answerEn` TEXT NULL,
   `order` INT NOT NULL DEFAULT 0,
   `isActive` BOOLEAN NOT NULL DEFAULT TRUE,
-  `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
-  `updatedAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3) ON UPDATE CURRENT_TIMESTAMP(3)
+  `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Table: Figure
 DROP TABLE IF EXISTS `Figure`;
 CREATE TABLE `Figure` (
   `id` VARCHAR(191) NOT NULL PRIMARY KEY,
   `name` VARCHAR(191) NOT NULL,
-  `nameEn` VARCHAR(191) NULL,
-  `position` VARCHAR(191) NOT NULL,
-  `positionEn` VARCHAR(191) NULL,
-  `image` VARCHAR(191) NOT NULL,
+  `role` VARCHAR(191) NULL,
+  `roleEn` VARCHAR(191) NULL,
+  `image` VARCHAR(191) NULL,
   `order` INT NOT NULL DEFAULT 0,
   `isActive` BOOLEAN NOT NULL DEFAULT TRUE,
-  `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
-  `updatedAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3) ON UPDATE CURRENT_TIMESTAMP(3)
+  `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Table: Partnership
 DROP TABLE IF EXISTS `Partnership`;
 CREATE TABLE `Partnership` (
   `id` VARCHAR(191) NOT NULL PRIMARY KEY,
   `name` VARCHAR(191) NOT NULL,
-  `nameEn` VARCHAR(191) NULL,
-  `logo` VARCHAR(191) NOT NULL,
-  `category` VARCHAR(191) NOT NULL,
+  `image` VARCHAR(191) NULL,
+  `url` VARCHAR(191) NULL,
   `order` INT NOT NULL DEFAULT 0,
   `isActive` BOOLEAN NOT NULL DEFAULT TRUE,
+  `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+DROP TABLE IF EXISTS `SEO`;
+CREATE TABLE `SEO` (
+  `id` VARCHAR(191) NOT NULL PRIMARY KEY,
+  `pageType` VARCHAR(191) NOT NULL, -- 'global', 'post', 'page'
+  `targetId` VARCHAR(191) NULL,
+  `title` VARCHAR(191) NULL,
+  `description` TEXT NULL,
+  `keywords` VARCHAR(191) NULL,
+  `ogImage` VARCHAR(191) NULL,
   `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
   `updatedAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3) ON UPDATE CURRENT_TIMESTAMP(3)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Table: PageBlock
-DROP TABLE IF EXISTS `PageBlock`;
-CREATE TABLE `PageBlock` (
-  `id` VARCHAR(191) NOT NULL PRIMARY KEY,
-  `pageId` VARCHAR(191) NOT NULL,
-  `type` VARCHAR(191) NOT NULL,
-  `order` INT NOT NULL DEFAULT 0,
-  `data` LONGTEXT NOT NULL,
-  `isActive` BOOLEAN NOT NULL DEFAULT TRUE,
-  `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
-  `updatedAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3) ON UPDATE CURRENT_TIMESTAMP(3),
-  INDEX `PageBlock_pageId_idx` (`pageId`),
-  FOREIGN KEY (`pageId`) REFERENCES `Page`(`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
 SET FOREIGN_KEY_CHECKS = 1;
-
