@@ -160,15 +160,7 @@ export default function HomePage() {
                 <p className="text-xl md:text-2xl mb-8 text-primary-100">
                   {settings.website_tagline?.value || 'Tagline Website Default'}
                 </p>
-                <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                  <Link
-                    to="/pendaftaran"
-                    className="bg-white text-primary-700 px-8 py-3 rounded-lg font-semibold hover:bg-primary-50 transition-colors inline-flex items-center justify-center"
-                  >
-                    Pendaftaran Murid Baru
-                    <ArrowRight className="ml-2 h-5 w-5" />
-                  </Link>
-                </div>
+                
               </div>
             </div>
           </section>
